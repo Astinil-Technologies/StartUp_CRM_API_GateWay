@@ -89,6 +89,17 @@ public class JwtTokenUtil {
             this.secretKey = Keys.hmacShaKeyFor("defaultSecretKey".getBytes(StandardCharsets.UTF_8));
         }
     }
+    public boolean isValidJwtFormat(String token) {
+        return token.chars().filter(ch -> ch == '.').count() == 2;
+    }
+    public String extractUsername(String token) {
+        try {
+            return extractClaim(token, Claims::getSubject);
+        } catch (JwtTokenParseException e) {
+            logError("Failed to extract username from the token", e);
+            throw new JwtTokenException("Failed to extract username from the token: " + e.getMessage(), e);
+        }
+    }
 
     private void logError(String message, Exception e) {
         logger.error("{}: {}", message, e.getMessage(), e);
