@@ -16,7 +16,7 @@ public class GatewayCorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
                 "http://localhost:4200",
-                "http://13.232.97.18:4200",
+                //"http://13.232.97.18:4200",
                 "https://startahb.com"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
