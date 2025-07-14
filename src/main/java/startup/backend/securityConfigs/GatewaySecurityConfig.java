@@ -2,6 +2,7 @@ package startup.backend.securityConfigs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -15,10 +16,11 @@ public class GatewaySecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, AuthenticationWebFilter authenticationWebFilter) {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .cors(Customizer.withDefaults()) // enable CRos origin
+                .cors(Customizer.withDefaults()) // enable CORS origin
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/auth/**", "/api/v1/users/request-password-reset","/api/v1/users/reset-password").permitAll() // Public
-                        .anyExchange().authenticated() // Protected
+                        .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll() // ✅ Allow preflight CORS
+                        .pathMatchers("/auth/**", "/api/v1/users/request-password-reset", "/api/v1/users/reset-password").permitAll()
+                        .anyExchange().authenticated() // All other requests require auth
                 )
                 .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
